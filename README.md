@@ -5,6 +5,7 @@ the coins are free
 #### notes
 
 * https://github.com/ethereum/eips/issues/721
+* https://github.com/dharmaprotocol/NonFungibleToken/blob/master/contracts/NonFungibleToken.sol
 * https://theethereum.wiki/w/index.php/ERC20_Token_Standard
 * http://truffleframework.com/docs/getting_started/project
 * https://github.com/dob/auctionhouse
