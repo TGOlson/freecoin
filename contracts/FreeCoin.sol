@@ -1,7 +1,7 @@
 pragma solidity ^0.4.0;
 
-import "ERC721Interface.sol";
-import "Owned.sol";
+import "./ERC721Interface.sol";
+import "./Owned.sol";
 
 contract FreeCoin is ERC721Interface, Owned {
     string public name;
