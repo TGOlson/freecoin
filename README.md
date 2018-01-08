@@ -2,12 +2,27 @@
 
 the coins are free
 
-setup
+#### initial setup
+
 ```
 $ npm install -g truffle
 $ truffle develop
 
-truffle(develop)> test/compile/migrate
+truffle(develop)> migrate
+```
+
+```
+$ open app/index.html
+```
+
+(note: you may have to change the `FreeCoin` contract address)
+
+#### dev
+
+```
+$ truffle develop
+
+truffle(develop)> test/migrate/compile
 ```
 
 #### notes
