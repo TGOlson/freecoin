@@ -4,9 +4,8 @@ import "./ERC721Interface.sol";
 import "./Owned.sol";
 
 contract FreeCoin is ERC721Interface, Owned {
-    string public name;
-    string public symbol;
-
+    string public _name;
+    string public _symbol;
     uint24 public _totalSupply;
     uint24 public maxSupply;
 
@@ -32,9 +31,8 @@ contract FreeCoin is ERC721Interface, Owned {
     );
 
     function FreeCoin() public {
-        name   = "FreeCoin";
-        symbol = "FREE";
-
+        _name        = "FreeCoin";
+        _symbol      = "FREE";
         _totalSupply = 0;
         maxSupply    = 1000000; // 1M;
 
@@ -45,6 +43,14 @@ contract FreeCoin is ERC721Interface, Owned {
     }
 
     // ERC721 spec compliant functions ///////////////////////////////////////////////////////////////////////
+
+    function name() public constant returns (string) {
+        return _name;
+    }
+
+    function symbol() public constant returns (string) {
+        return _symbol;
+    }
 
     function totalSupply() public constant returns (uint) {
         return _totalSupply;
