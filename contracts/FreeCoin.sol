@@ -3,7 +3,6 @@ pragma solidity ^0.4.0;
 import "ERC721Interface.sol";
 import "Owned.sol";
 
-// https://github.com/ethereum/eips/issues/721
 contract FreeCoin is ERC721Interface, Owned {
     string public name;
     string public symbol;
@@ -44,6 +43,8 @@ contract FreeCoin is ERC721Interface, Owned {
         // start faucet 3 blocks from now (current + 1 + distributionInterval)
         lastDistributionBlockNum = block.number + 1;
     }
+
+    // ERC721 spec compliant functions ///////////////////////////////////////////////////////////////////////
 
     function totalSupply() public constant returns (uint) {
         return _totalSupply;
@@ -118,6 +119,8 @@ contract FreeCoin is ERC721Interface, Owned {
         // todo
         return "";
     }
+
+    // FreeCoin functionality ////////////////////////////////////////////////////////////////////////////////
 
     // todo: needs to only be accessible by owner
     function registerAddresses(address[] addresses) public onlyOwner {

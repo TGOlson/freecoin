@@ -1,6 +1,5 @@
 pragma solidity ^0.4.0;
 
-// https://github.com/ethereum/eips/issues/721
 interface ERC721Interface {
     function totalSupply() public constant returns (uint256 _totalSupply);
     function balanceOf(address _owner) public constant returns (uint256 _balance);

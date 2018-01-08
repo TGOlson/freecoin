@@ -1,6 +1,5 @@
 pragma solidity ^0.4.0;
 
-// https://theethereum.wiki/w/index.php/ERC20_Token_Standard
 contract Owned {
     address public owner;
     address public newOwner;
