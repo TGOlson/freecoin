@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>FreeCoin</title>
+  </head>
+  <body>
+    <h1>FreeCoin</h1>
+    <p>Current block number: <span id="blocknum"></span></p>
+    <p>Total Supply: <span id="supply">...</span></p>
+    <p>Coin owners:</p>
+    <ul id="owners">
+    </ul>
+
+    <button onclick="incBlock()">Inc block number (dev only)</button>
+    <button onclick="distributeTokens()">Distribute tokens (dev only)</button>
+
+  </body>
+
+  <script type="text/javascript" src="./web3.js"></script>
+  <script type="text/javascript" src="./freeCoinAbi.js"></script>
+  <script type="text/javascript">
+    web3 = new Web3(new Web3.providers.HttpProvider('http://localhost:9545/'));
+
+    const FreeCoin = web3.eth.contract(abi);
+    const freeCoin = FreeCoin.at('0x345ca3e014aaf5dca488057592ee47305d9b3e10');
+    window.freeCoin = freeCoin;
+
+    // set default account so we can run transactions
+    web3.eth.defaultAccount = web3.eth.accounts[0]
+
+    // if total supply of coins is zero, seed the contract
+    // otherwise skip, it's a little slow...
+    if (freeCoin.totalSupply(2).toNumber() == 0) {
+      freeCoin.registerAddresses(web3.eth.accounts, {gas: 3000000});
+
+      // skip a few blocks
+      for (var i = 0; i < 20; i++) {
+        freeCoin.blockNum();
+      }
+
+      freeCoin.distributeToken({gas: 3000000});
+    }
+
+
+    const incBlock = () => {
+      freeCoin.blockNum();
+      renderBlockNum();
+    }
+
+    const distributeTokens = () => {
+      try {
+        freeCoin.distributeToken({gas: 3000000});
+      } catch (e) {
+        alert('Unable to distribute tokens. Try bumping block num?');
+      }
+
+      render();
+    }
+
+    const renderBlockNum = () =>
+      document.getElementById('blocknum').textContent = web3.eth.blockNumber;
+
+    const renderSupply = () =>
+      document.getElementById('supply').textContent = freeCoin.totalSupply(2).toNumber();
+
+    const render = () => {
+      renderBlockNum();
+      renderSupply();
+
+      const totalSupply = freeCoin.totalSupply(2).toNumber();
+
+      const owners = document.getElementById('owners');
+      owners.innerHTML = "";
+
+      for (var i = 0; i < totalSupply; i++) {
+        console.log('checking', i)
+        const ownerAddr = freeCoin.ownerOf(i);
+        const node = document.createElement('li');
+        const text = document.createTextNode('Coin ' + i + ' - ' + ownerAddr);
+
+        node.appendChild(text);
+        owners.appendChild(node);
+      }
+    }
+
+    render();
+
+  </script>
+</html>

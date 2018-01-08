@@ -2,6 +2,14 @@
 
 the coins are free
 
+setup
+```
+$ npm install -g truffle
+$ truffle develop
+
+truffle(develop)> test/compile/migrate
+```
+
 #### notes
 
 * https://github.com/ethereum/eips/issues/721
