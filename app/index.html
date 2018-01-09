@@ -6,42 +6,37 @@
   </head>
   <body>
     <h1>FreeCoin</h1>
+    <p>Contract address: <span id="address"></span></p>
+    <p>Your address: <span id="currentaddr"></span></p>
+
     <p>Current block number: <span id="blocknum"></span></p>
     <p>Total Supply: <span id="supply">...</span></p>
     <p>Coin owners:</p>
-    <ul id="owners">
-    </ul>
+    <ul id="owners"></ul>
 
     <button onclick="incBlock()">Inc block number (dev only)</button>
     <button onclick="distributeTokens()">Distribute tokens (dev only)</button>
-
   </body>
 
   <script type="text/javascript" src="./web3.js"></script>
-  <script type="text/javascript" src="./freeCoinAbi.js"></script>
   <script type="text/javascript">
     web3 = new Web3(new Web3.providers.HttpProvider('http://localhost:9545/'));
-
-    const FreeCoin = web3.eth.contract(abi);
-    const freeCoin = FreeCoin.at('0x345ca3e014aaf5dca488057592ee47305d9b3e10');
-    window.freeCoin = freeCoin;
-
-    // set default account so we can run transactions
-    web3.eth.defaultAccount = web3.eth.accounts[0]
+    var freeCoin = null; // set during initialization below
 
     // if total supply of coins is zero, seed the contract
     // otherwise skip, it's a little slow...
-    if (freeCoin.totalSupply(2).toNumber() == 0) {
-      freeCoin.registerAddresses(web3.eth.accounts, {gas: 3000000});
+    const maybeInitTokens = () => {
+      if (freeCoin.totalSupply(2).toNumber() == 0) {
+        freeCoin.registerAddresses(web3.eth.accounts, {gas: 3000000});
 
-      // skip a few blocks
-      for (var i = 0; i < 20; i++) {
-        freeCoin.blockNum();
+        // skip a few blocks
+        for (var i = 0; i < 20; i++) {
+          freeCoin.blockNum();
+        }
+
+        freeCoin.distributeToken({gas: 3000000});
       }
-
-      freeCoin.distributeToken({gas: 3000000});
     }
-
 
     const incBlock = () => {
       freeCoin.blockNum();
@@ -77,14 +72,39 @@
         console.log('checking', i)
         const ownerAddr = freeCoin.ownerOf(i);
         const node = document.createElement('li');
-        const text = document.createTextNode('Coin ' + i + ' - ' + ownerAddr);
+
+        const display = ownerAddr === web3.eth.defaultAccount
+          ? 'Coin ' + i + ' - ' + ownerAddr + ' *'
+          : 'Coin ' + i + ' - ' + ownerAddr;
+
+        const text = document.createTextNode(display);
 
         node.appendChild(text);
         owners.appendChild(node);
       }
     }
 
-    render();
+    Promise.all([
+      // TODO: fetching abi from build is convenient in dev, but should probably be handled differently in prod
+      fetch(window.location.origin + '/build/contracts/FreeCoin.json').then(r => r.json()).then(r => r.abi),
+      fetch(window.location.origin + '/freecoin.address').then(r => r.text())
+    ])
+      .then(([abi, addr]) => {
+        const FreeCoin = web3.eth.contract(abi);
+
+        freeCoin = FreeCoin.at(addr);
+        window.freeCoin = freeCoin;
+
+        document.getElementById('address').textContent = addr;
+
+        // set default account so we can run transactions
+        web3.eth.defaultAccount = web3.eth.accounts[0];
+
+        document.getElementById('currentaddr').textContent = web3.eth.defaultAccount;
+
+        maybeInitTokens();
+        render();
+      });
 
   </script>
 </html>

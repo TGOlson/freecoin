@@ -9,18 +9,13 @@ $ npm install -g truffle
 $ truffle develop
 
 truffle(develop)> migrate
-develop
-  Replacing FreeCoin...
-  ... 0x12209be5272dd7a16130d0f4e89e5af9a9826a70e5b2141b00516c9ba4003648
-  FreeCoin: <contract address>
-  ...
 ```
 
-Copy output `<contract address>` into `app/index.html` -> `const freeCoin = FreeCoin.at(<contract address>);`
+```
+$ python -m SimpleHTTPServer 8000
+```
 
-```
-$ open app/index.html
-```
+Navigate to `http://localhost:8000/app/index.html`
 
 #### dev
 

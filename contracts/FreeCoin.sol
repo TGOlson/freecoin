@@ -10,6 +10,7 @@ contract FreeCoin is ERC721Interface, Owned {
     uint24 public maxSupply;
 
     address[] public ownerByTokenId;
+    mapping(address => uint[]) public tokenIdsByOwner;
 
     uint public lastDistributionBlockNum;
 
